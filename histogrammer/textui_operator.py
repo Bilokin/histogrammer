@@ -23,7 +23,7 @@ class TextUIOperator():
         self.say("To continue press Enter, to exit please type 'e'")
         answer = input()
         if answer == 'e':
-            return False
+            sys.exit('Bye!')
         return True
 
     def ask_user_choice(self, message: str, mlist: list, ask_exit: bool = False) -> int:

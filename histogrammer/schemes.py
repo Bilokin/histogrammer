@@ -125,6 +125,10 @@ class BelleScheme(SchemeBase):
         assert self.length == len(self.original_columns)
 
     def add_to_groups(self, group: str, value: str):
+        """
+        Adds a column to a group of columns, creates a 
+        group if it does not exist.
+        """
         if not group:
             if not value in self.groups[self.parent_group_name]:
                 self.groups[self.parent_group_name] += [value]

@@ -12,7 +12,10 @@ def getArguments(artificialArgs=None):
                     default=None)
     parser.add_argument('-sc', '--scheme', help='Contruction scheme to use', 
                     default='belle', type=str, choices=['belle', 'none'])
-
+    parser.add_argument('-by', '--split_by', help='Split all by a cut', 
+                    default=None, type=str)
+    parser.add_argument('-n', '--n_bins', help='Number of bins for all plots', 
+                    default=50, type=int)    
     args = {}
     if artificialArgs is not None:
         args = parser.parse_args([artificialArgs])
