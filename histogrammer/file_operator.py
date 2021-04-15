@@ -98,13 +98,22 @@ class FileOperator():
         Returns a dataframe after a user selection cut
         """
         if not self.split_by_cut:
-            return None
-        splitted = self.prime_dataframe.query(str(self.split_by_cut), engine='python')
-        if len(splitted) < 1:
+            split_column_name = self.scheme.get_split_column_name(column_name)
+            print(split_column_name)
+            if not split_column_name:
+                return None
+            # TODO: this is a really simple functionality
+            cut = f'{split_column_name} > 0'
+            splitted_df = self.prime_dataframe.query(cut, engine='python')
+            if len(splitted_df) < 1:
+                return None
+            return splitted_df[column_name]
+        splitted_df = self.prime_dataframe.query(str(self.split_by_cut), engine='python')
+        if len(splitted_df) < 1:
             return None
         if column_name:
-            return splitted[column_name]
-        return splitted
+            return splitted_df[column_name]
+        return splitted_df
 
     def get_primary(self, column_name: str = None) -> pd.DataFrame:
         """

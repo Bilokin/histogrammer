@@ -16,7 +16,7 @@ class PlotOperator():
         if 'n_bins' in args and args['n_bins']:
             self.n_bins = args['n_bins']
 
-    def plot_histogram(self, variable_name: str, ax) -> None:
+    def plot_histogram(self, variable_name: str, ax, title: str = None) -> None:
         """
         Plots a 1D histogram on axis.
         """
@@ -27,6 +27,9 @@ class PlotOperator():
         splitted = self.file_operator.get_split_by(variable_name)
         if not splitted is None:
             ax.hist(splitted, **plot_args)
+        if title is None:
+            title = self.file_operator.scheme.get_short_column_name(variable_name)
+        ax.set_xlabel(title)
 
     def plot(self, variable_names: list):
         """

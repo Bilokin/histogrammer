@@ -44,12 +44,25 @@ class SchemeBase(ABC):
         pass
 
     @abstractmethod
+    def get_short_column_name(self, full_name: str) -> str:
+        """
+        Returns a short column name.
+        """
+        pass
+
+    @abstractmethod
     def get_full_column_name(self, group_name: str, short_name: str) -> str:
         """
         Returns a full column name.
         """
         pass
 
+    @abstractmethod
+    def get_split_column_name(self, full_name: str) -> str:
+        """
+        Returns a split column name, none if not found
+        """
+        pass
 
 class NoneScheme(SchemeBase):
     """
@@ -80,6 +93,19 @@ class NoneScheme(SchemeBase):
         """
         return short_name
 
+    def get_split_column_name(self, full_name: str) -> str:
+        """
+        Returns a split column name, none if not found
+        """
+        return None
+
+    def get_short_column_name(self, full_name: str) -> str:
+        """
+        Returns a short column name.
+        """
+        return full_name
+
+
 class BelleScheme(SchemeBase):
     """
     Class that groups columns according to basf2 naming convention.
@@ -91,6 +117,7 @@ class BelleScheme(SchemeBase):
         super().__init__()
         self.prefixes = []
         self.original_columns = []
+        self.short_split_column_name = 'isSignal'
 
     def initialize(self, columns: list) -> None:
         """
@@ -149,6 +176,28 @@ class BelleScheme(SchemeBase):
         columns = self.groups[group_name]
         return [column[len(group_name)+1:] for column in columns]
 
+    def get_group_name_of(self, full_name: str) -> str:
+        """
+        Returns a name of the group to which the column belongs.
+        """
+        if not full_name:
+            raise Exception('Group name has not been provided!')
+        for group_name in self.groups:
+            if full_name.startswith(group_name):
+                return group_name
+        if not full_name in self.groups[self.parent_group_name]:
+            raise Exception(f'Column name {full_name} is unknown!')
+        return self.parent_group_name
+
+    def get_short_column_name(self, full_name: str) -> str:
+        """
+        Returns a short column name.
+        """
+        group_name = self.get_group_name_of(full_name)
+        if group_name == self.parent_group_name:
+            return full_name
+        return full_name[len(group_name)+1:]
+
     def get_full_column_name(self, group_name: str, short_name: str) -> str:
         """
         Returns a full column name.
@@ -158,3 +207,14 @@ class BelleScheme(SchemeBase):
         if not group_name in self.groups:
             raise Exception(f'Invalid column group name {group_name}!')
         return f'{group_name}_{short_name}'
+
+    def get_split_column_name(self, full_name: str) -> str:
+        """
+        Returns a split column name, none if not found
+        """
+        group_name = self.get_group_name_of(full_name)
+        print(group_name)
+        result =  self.get_full_column_name(group_name, self.short_split_column_name)
+        if result in self.groups[group_name]:
+            return result
+        return None
