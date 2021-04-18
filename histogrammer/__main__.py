@@ -15,7 +15,11 @@ def getArguments(artificialArgs=None):
     parser.add_argument('-by', '--split_by', help='Split all by a cut', 
                     default=None, type=str)
     parser.add_argument('-n', '--n_bins', help='Number of bins for all plots', 
-                    default=50, type=int)    
+                    default=50, type=int)   
+    parser.add_argument('-t', '--table_name', help='Name of the table in the datafile', 
+                    default=None, type=str)  
+    parser.add_argument('-v', '--versus_dataframe', help='Load another dataframe and compare them', 
+                    default=None, nargs='+')  
     args = {}
     if artificialArgs is not None:
         args = parser.parse_args([artificialArgs])

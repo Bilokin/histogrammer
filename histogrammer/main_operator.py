@@ -21,7 +21,6 @@ class MainOperator():
         Creates an infinite loop until the user or an 
         external condition breaks it.
         """
-        print('Hello world main loop!')
         self.file_operator.open_all()
         while(True):
             column = self.get_column_name_from_user()

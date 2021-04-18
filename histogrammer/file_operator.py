@@ -27,6 +27,13 @@ class FileOperator():
         self.split_by_cut = None
         if 'split_by' in args and args['split_by']:
             self.split_by_cut = args['split_by']
+        self.table_name = None
+        if 'table_name' in args and args['table_name']:
+            self.table_name = args['table_name']
+        self.secondary_filenames = None
+        self.secondary_dataframe = None
+        if 'versus_dataframe' in args and args['versus_dataframe']:
+            self.secondary_filenames = args['versus_dataframe']
 
     def open_all(self):
         """
@@ -36,7 +43,9 @@ class FileOperator():
         if not self.filenames:
             raise Exception('Filenames have not been provided!')
         self.prime_dataframe = self.open_files(self.filenames)
-        self.scheme.initialize(self.get_primary().columns)
+        self.scheme.initialize(self.get_df().columns)
+        if self.secondary_filenames:
+            self.secondary_dataframe = self.open_files(self.secondary_filenames)
 
     def open_files(self, filenames: list) -> pd.DataFrame:
         """
@@ -53,11 +62,16 @@ class FileOperator():
             elif filename.lower().endswith('root'):
                 with uproot.open(filename) as rootfile:
                     tree_names = self.get_names(rootfile.classnames())
-                    answer = 0
-                    if len(tree_names) > 1:
+                    selected_name = tree_names[0]
+                    if self.table_name and self.table_name in tree_names:
+                        selected_name = self.table_name
+                    elif len(tree_names) > 1:
                         answer = self.ui.ask_user_choice('Please choose an object to open:', 
                             tree_names, ask_exit=True)
-                    root_df = rootfile[tree_names[int(answer)]].pandas.df()
+                        selected_name = tree_names[int(answer)]
+                        # Remember the choice for other calls of the function:
+                        self.table_name = selected_name
+                    root_df = rootfile[selected_name].pandas.df()
                     if self.selection:
                         root_df = root_df.query(self.selection)
                     dfs += [root_df]
@@ -99,7 +113,7 @@ class FileOperator():
         """
         if not self.split_by_cut:
             split_column_name = self.scheme.get_split_column_name(column_name)
-            print(split_column_name)
+            #print(split_column_name)
             if not split_column_name:
                 return None
             # TODO: this is a really simple functionality
@@ -115,10 +129,24 @@ class FileOperator():
             return splitted_df[column_name]
         return splitted_df
 
-    def get_primary(self, column_name: str = None) -> pd.DataFrame:
+    def get_df(self, column_name: str or list = None, primary: bool = True):
         """
         Returns the converted dataframe or a column if name is provided.
         """
+        if not primary:
+            if self.secondary_dataframe is None:
+                return None
+            if column_name:
+                return self.secondary_dataframe[column_name]
+            return self.secondary_dataframe
         if column_name:
             return self.prime_dataframe[column_name]
         return self.prime_dataframe
+
+    def get_type(self, column_name) -> str:
+        """
+        Returns the converted dataframe or a column if name is provided.
+        """
+        if not column_name in self.prime_dataframe.columns:
+            return None
+        return self.prime_dataframe[column_name].dtype

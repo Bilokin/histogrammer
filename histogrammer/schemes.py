@@ -213,7 +213,7 @@ class BelleScheme(SchemeBase):
         Returns a split column name, none if not found
         """
         group_name = self.get_group_name_of(full_name)
-        print(group_name)
+        #print(group_name)
         result =  self.get_full_column_name(group_name, self.short_split_column_name)
         if result in self.groups[group_name]:
             return result
