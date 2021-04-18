@@ -91,21 +91,29 @@ class FileOperator():
             names += [raw_name]
         return names
 
-    def get_dynamic_range(self, column_name: str) -> tuple:
+    def get_dynamic_range(self, column_name: str) -> list:
         """
         Return a dynamic range for a column across all dataframes.
         """
         min1 = np.amin(self.prime_dataframe[column_name])
         max1 = np.amax(self.prime_dataframe[column_name])
         mrange = [min1, max1]
-        """
+        
         if self.secondary_dataframe is not None:
-            min2 = np.amin(self.FileOperator.Tree2[column_name])
-            max2 = np.amax(self.FileOperator.Tree2[column_name])
+            min2 = np.amin(self.secondary_dataframe[column_name])
+            max2 = np.amax(self.secondary_dataframe[column_name])
             mrange = [min(min1, min2), max(max1, max2)]
-        """
+        
         return mrange
 
+    def get_split_by_name(self, column_name: str = None) -> str:
+        """
+        Returns split query or column name.
+        """
+        if self.split_by_cut:
+            return self.split_by_cut
+        else:
+            return self.scheme.get_short_column_name(self.scheme.get_split_column_name(column_name))
 
     def get_split_by(self, column_name: str = None):
         """
