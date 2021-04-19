@@ -43,9 +43,10 @@ class FileOperator():
         if not self.filenames:
             raise Exception('Filenames have not been provided!')
         self.prime_dataframe = self.open_files(self.filenames)
-        self.scheme.initialize(self.get_df().columns)
+        self.scheme.initialize(self.prime_dataframe.columns)
         if self.secondary_filenames:
             self.secondary_dataframe = self.open_files(self.secondary_filenames)
+        # TODO: Compare the dataframes!
 
     def open_files(self, filenames: list) -> pd.DataFrame:
         """
@@ -72,12 +73,14 @@ class FileOperator():
                         # Remember the choice for other calls of the function:
                         self.table_name = selected_name
                     root_df = rootfile[selected_name].pandas.df()
+                    # Drop duplicated columns if any:
+                    root_df = root_df.loc[:, ~root_df.columns.duplicated()]
                     if self.selection:
                         root_df = root_df.query(self.selection)
                     dfs += [root_df]
             else:
                 sys.exit(f'File {filename} has an unsupported format!')
-        return pd.concat(dfs, ignore_index=True).convert_dtypes()
+        return pd.concat(dfs, ignore_index=True).convert_dtypes()#.sort_index(axis=1)
 
     def get_names(self, raw_names: list) -> list:
         """

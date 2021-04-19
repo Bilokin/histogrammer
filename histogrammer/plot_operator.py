@@ -72,6 +72,6 @@ class PlotOperator():
             else:
                 self.plot_histogram(variable_name, ax=ax)
         fig.tight_layout()
-        plt.legend(loc='upper right',fancybox=True, framealpha=0.5)
+        plt.legend(fancybox=True, framealpha=0.5)
         plt.show(block=False)
         self.ui.ask_continue_or_exit()

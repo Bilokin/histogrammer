@@ -124,7 +124,6 @@ class BelleScheme(SchemeBase):
         Initializes scheme using the column list.
         """
         self.original_columns = list(columns)
-        #print(self.original_columns)
         for column in self.original_columns:
             group = rh.find_belle_group(column)
             #print(group)
@@ -160,7 +159,7 @@ class BelleScheme(SchemeBase):
             if not value in self.groups[self.parent_group_name]:
                 self.groups[self.parent_group_name] += [value]
                 return
-        if not group in self.groups:
+        elif not group in self.groups:
             self.groups[group] = [value]
         elif not value in self.groups[group]:
             self.groups[group] += [value]
