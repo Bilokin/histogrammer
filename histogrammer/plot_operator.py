@@ -52,9 +52,13 @@ class PlotOperator():
         if not splitted is None:
             sec_label = self.file_operator.get_split_by_name(variable_name)
             ax.hist(splitted, hatch='//', label=sec_label, **plot_args)
+        else:
+            next(ax._get_lines.prop_cycler) 
+            next(ax._get_lines.prop_cycler) 
+        next(ax._get_lines.prop_cycler) 
         secondary = self.file_operator.get_df(variable_name, False)
         if not secondary is None:
-            ax.hist(secondary,  **plot_args)
+            ax.hist(secondary, hatch='\\\\', label=label+' (alt.)', **plot_args)
         if title is None:
             title = self.file_operator.scheme.get_short_column_name(variable_name)
         ax.set_xlabel(title)
