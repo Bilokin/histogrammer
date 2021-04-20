@@ -1,12 +1,8 @@
 import setuptools
 from histogrammer import __version__
-print(__version__)
 
-install_requires = [
-    "root_pandas>=0.7.0",
-    "numpy",
-    "pandas"
-]
+with open("requirements.txt", "r") as fr:
+    install_requires = fr.readlines()
 
 with open("README.rst", "r") as fh:
     long_description = fh.read()
