@@ -7,3 +7,10 @@ If yes, then this package is right for you!
 
 *Histogrammer* allows you to plot basic histograms from any data file 
 in a fast and user-friendly manner!
+
+Launch
+------
+
+.. code-block:: bash
+
+  python3 -m histogrammer my_file.csv
