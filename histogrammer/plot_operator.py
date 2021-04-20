@@ -54,8 +54,6 @@ class PlotOperator():
             ax.hist(splitted, hatch='//', label=sec_label, **plot_args)
         else:
             next(ax._get_lines.prop_cycler) 
-            next(ax._get_lines.prop_cycler) 
-        next(ax._get_lines.prop_cycler) 
         secondary = self.file_operator.get_df(variable_name, False)
         if not secondary is None:
             ax.hist(secondary, hatch='\\\\', label=label+' (alt.)', **plot_args)
@@ -78,4 +76,3 @@ class PlotOperator():
         fig.tight_layout()
         plt.legend(fancybox=True, framealpha=0.5)
         plt.show(block=False)
-        self.ui.ask_continue_or_exit()

@@ -12,7 +12,7 @@ class MainOperator():
         Constructor method
         """
         self.ui = TextUIOperator()
-        self.file_operator = FileOperator(args)
+        self.file_operator = FileOperator(args['filenames'], args)
         self.plt = PlotOperator(self.file_operator, self.ui, args)
         self.to_exit = False
 
@@ -25,6 +25,8 @@ class MainOperator():
         while(True):
             column = self.get_column_name_from_user()
             self.plt.plot([column])
+            self.ui.ask_continue_or_exit()
+
 
     def get_column_name_from_user(self) -> str:
         """

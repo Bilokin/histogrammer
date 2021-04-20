@@ -10,12 +10,12 @@ class FileOperator():
     """
     Class that opens the file and converts it to a dataframe.
     """
-    def __init__(self, args: dict):
+    def __init__(self, filenames: list, args: dict):
         """
         Constructor method.
         """
         self.ui = TextUIOperator()
-        self.filenames = args['filenames']
+        self.filenames = filenames
         self.selection = None
         if 'selection_cut' in args and args['selection_cut']:
             self.selection = args['selection_cut']
@@ -80,7 +80,7 @@ class FileOperator():
                     dfs += [root_df]
             else:
                 sys.exit(f'File {filename} has an unsupported format!')
-        return pd.concat(dfs, ignore_index=True).convert_dtypes()#.sort_index(axis=1)
+        return pd.concat(dfs, ignore_index=True)
 
     def get_names(self, raw_names: list) -> list:
         """
@@ -98,6 +98,7 @@ class FileOperator():
         """
         Return a dynamic range for a column across all dataframes.
         """
+        print(self.prime_dataframe[column_name])
         min1 = np.amin(self.prime_dataframe[column_name])
         max1 = np.amax(self.prime_dataframe[column_name])
         mrange = [min1, max1]
@@ -106,7 +107,9 @@ class FileOperator():
             min2 = np.amin(self.secondary_dataframe[column_name])
             max2 = np.amax(self.secondary_dataframe[column_name])
             mrange = [min(min1, min2), max(max1, max2)]
-        
+        # Output dummy values in case of all NaNs
+        if mrange[0] is np.nan and mrange[1] is np.nan:
+            return [0,1]
         return mrange
 
     def get_split_by_name(self, column_name: str = None) -> str:
