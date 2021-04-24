@@ -12,6 +12,7 @@ Installation
 ------------
 
 This is a usual python package, but it is not yet indexed in https://pypi.org/. 
+
 However, one can install any package from git directly:
 
 .. code-block:: bash
@@ -27,6 +28,7 @@ Histogrammer supports the following formats:
  * `ROOT <https://www.root.cern/>`_.
 
 This isn't much, but the list will be expanded soon.
+
 To launch the program on a file, one has to enter the following command:
 
 .. code-block:: bash
@@ -34,4 +36,5 @@ To launch the program on a file, one has to enter the following command:
   python3 -m histogrammer my_file.csv
 
 By default, the program will ask user a column name for a histogram plot.
+
 After the histogram is displayed, user may choose to do something else with the chosen column or select a new column to plot.
