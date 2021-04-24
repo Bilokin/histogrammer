@@ -10,7 +10,7 @@ def getArguments(artificialArgs=None):
     parser.add_argument('filenames', help="Your data file name", nargs='+')
     parser.add_argument('-c', '--selection_cut', help='Selection cut to use',
                     default=None)
-    parser.add_argument('-sc', '--scheme', help='Contruction scheme to use', 
+    parser.add_argument('-sc', '--scheme', help='Contraction scheme to use', 
                     default='belle', type=str, choices=['belle', 'none'])
     parser.add_argument('-by', '--split_by', help='Split all by a cut', 
                     default=None, type=str)
@@ -18,7 +18,7 @@ def getArguments(artificialArgs=None):
                     default=50, type=int)   
     parser.add_argument('-t', '--table_name', help='Name of the table in the datafile', 
                     default=None, type=str)  
-    parser.add_argument('-v', '--versus_dataframe', help='Load another dataframe and compare them', 
+    parser.add_argument('-vs', '--versus_dataframe', help='Load another dataframe and compare them', 
                     default=None, nargs='+')  
     args = {}
     if artificialArgs is not None:
