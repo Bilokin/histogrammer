@@ -38,30 +38,33 @@ class PlotOperator():
             'font.size': 14}
         plt.rcParams.update(mpl_cfg)
 
-    def plot_histogram(self, variable_name: str, ax, title: str = None) -> None:
+    def plot_histogram(self, variable_name: str, ax, title: str = None, 
+                    weight_column: str = None, for_primary: bool = True) -> None:
         """
         Plots a 1D histogram on axis.
         """
         mrange = self.file_operator.get_dynamic_range(variable_name)
+        primary = self.file_operator.get_df(variable_name, for_primary=for_primary)
+        primary_weights = None
+        if weight_column:
+            primary_weights = self.file_operator.get_df(weight_column, for_primary=for_primary)
         plot_args = {'range': mrange,
                      'bins':self.n_bins}
         plot_args.update(self.std_plot_args)
         label = 'All entries'
-        ax.hist(self.file_operator.get_df(variable_name), hatch='//', label=label, **plot_args)
-        splitted = self.file_operator.get_split_by(variable_name)
+        ax.hist(primary, hatch='//', label=label, weights=primary_weights, **plot_args)
+        splitted = self.file_operator.get_split_by(variable_name, for_primary=for_primary)
         if not splitted is None:
             sec_label = self.file_operator.get_split_by_name(variable_name)
             ax.hist(splitted, hatch='//', label=sec_label, **plot_args)
         else:
-            next(ax._get_lines.prop_cycler) 
-        secondary = self.file_operator.get_df(variable_name, False)
-        if not secondary is None:
-            ax.hist(secondary, hatch='\\\\', label=label+' (alt.)', **plot_args)
+            # Empty plot to switch the color:
+            ax.hist([],**plot_args)
         if title is None:
             title = self.file_operator.scheme.get_short_column_name(variable_name)
         ax.set_xlabel(title)
 
-    def plot(self, variable_names: list):
+    def plot(self, variable_names: list, weight_column=None):
         """
         Plots a canvas of n-plots.
         """
@@ -70,9 +73,16 @@ class PlotOperator():
         for variable_name in variable_names:
             col_type =  str(self.file_operator.get_type(variable_name)).lower()
             if col_type.startswith('float'):
-                self.plot_histogram(variable_name, ax=ax)
+                self.plot_histogram(variable_name, ax=ax, weight_column=weight_column)
+                if self.file_operator.has_secondary():
+                    self.plot_histogram(variable_name, ax=ax, weight_column=weight_column,
+                        for_primary=False)
+
             else:
-                self.plot_histogram(variable_name, ax=ax)
+                self.plot_histogram(variable_name, ax=ax, weight_column=weight_column)
+                if self.file_operator.has_secondary():
+                    self.plot_histogram(variable_name, ax=ax, weight_column=weight_column,
+                        for_primary=False)
         fig.tight_layout()
         plt.legend(fancybox=True, framealpha=0.5)
         plt.show(block=False)

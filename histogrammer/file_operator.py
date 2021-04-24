@@ -120,10 +120,13 @@ class FileOperator():
         else:
             return self.scheme.get_short_column_name(self.scheme.get_split_column_name(column_name))
 
-    def get_split_by(self, column_name: str = None):
+    def get_split_by(self, column_name: str = None, for_primary: bool = True):
         """
         Returns a dataframe after a user selection cut
         """
+        dataframe = self.prime_dataframe
+        if not for_primary:
+            dataframe = self.secondary_dataframe
         if not self.split_by_cut:
             split_column_name = self.scheme.get_split_column_name(column_name)
             #print(split_column_name)
@@ -131,22 +134,22 @@ class FileOperator():
                 return None
             # TODO: this is a really simple functionality
             cut = f'{split_column_name} > 0'
-            splitted_df = self.prime_dataframe.query(cut, engine='python')
+            splitted_df = dataframe.query(cut, engine='python')
             if len(splitted_df) < 1:
                 return None
             return splitted_df[column_name]
-        splitted_df = self.prime_dataframe.query(str(self.split_by_cut), engine='python')
+        splitted_df = dataframe.query(str(self.split_by_cut), engine='python')
         if len(splitted_df) < 1:
             return None
         if column_name:
             return splitted_df[column_name]
         return splitted_df
 
-    def get_df(self, column_name: str or list = None, primary: bool = True):
+    def get_df(self, column_name: str or list = None, for_primary: bool = True):
         """
         Returns the converted dataframe or a column if name is provided.
         """
-        if not primary:
+        if not for_primary:
             if self.secondary_dataframe is None:
                 return None
             if column_name:
@@ -163,3 +166,9 @@ class FileOperator():
         if not column_name in self.prime_dataframe.columns:
             return None
         return self.prime_dataframe[column_name].dtype
+    
+    def has_secondary(self) -> bool:
+        """
+        Returns True, if there is a secondary dataframe.
+        """
+        return self.secondary_dataframe is not None

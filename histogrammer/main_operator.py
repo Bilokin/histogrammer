@@ -1,3 +1,4 @@
+import sys
 import histogrammer
 from histogrammer.file_operator import FileOperator
 from histogrammer.textui_operator import TextUIOperator
@@ -15,6 +16,8 @@ class MainOperator():
         self.file_operator = FileOperator(args['filenames'], args)
         self.plt = PlotOperator(self.file_operator, self.ui, args)
         self.to_exit = False
+        self.all_choices = ['New plot', 'Weight with']
+        self.choice = 0
 
     def main_loop(self) -> None:
         """
@@ -22,10 +25,21 @@ class MainOperator():
         external condition breaks it.
         """
         self.file_operator.open_all()
+        column = ''
         while(True):
-            column = self.get_column_name_from_user()
-            self.plt.plot([column])
-            self.ui.ask_continue_or_exit()
+            if self.choice == 0:
+                self.ui.say('Plotting a new histogram')
+                column = self.get_column_name_from_user()
+                self.plt.plot([column])
+                self.choice = self.ui.ask_user_choice('Please select an action:', self.all_choices, True)
+            elif self.choice == 1:
+                print(self.choice )
+                self.ui.say('Plotting the histogram with weight')
+                weight_column = self.get_column_name_from_user()
+                self.plt.plot([column], weight_column=weight_column)
+                self.choice = 0
+            elif self.choice > len(self.all_choices) or self.choice < 0:
+                sys.exit('Something unexpected happened!')
 
 
     def get_column_name_from_user(self) -> str:
