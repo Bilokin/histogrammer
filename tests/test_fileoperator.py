@@ -4,7 +4,7 @@ import unittest
 from histogrammer.file_operator import FileOperator
 
 class TestFileOperator(unittest.TestCase):
-    """Tests basic functions of Repositories"""
+    """Tests basic functions of FileOperator"""
     @pytest.fixture(autouse=True)
     def initdir(self, tmpdir):
         print(tmpdir)
@@ -42,7 +42,7 @@ class TestFileOperator(unittest.TestCase):
         self.assertIsNotNone(self.file_io3.secondary_dataframe)
         self.assertEqual(len(self.file_io3.secondary_dataframe), 4)
         # Scheme test:
-        self.assertIsNotNone(self.file_io3.scheme)
+        self.assertIsNotNone(self.file_io.scheme)
         
 
     def test_get_dynamic_range(self):
