@@ -98,7 +98,6 @@ class FileOperator():
         """
         Return a dynamic range for a column across all dataframes.
         """
-        print(self.prime_dataframe[column_name])
         min1 = np.amin(self.prime_dataframe[column_name])
         max1 = np.amax(self.prime_dataframe[column_name])
         mrange = [min1, max1]
