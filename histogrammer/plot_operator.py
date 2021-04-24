@@ -38,6 +38,28 @@ class PlotOperator():
             'font.size': 14}
         plt.rcParams.update(mpl_cfg)
 
+    def plot_scatter(self, variable_names: list or tuple, ax, title: str = None, 
+                     for_primary: bool = True) -> None:
+        """
+        Plots a 2D scatter plot on axis.
+        """
+        primary = self.file_operator.get_df(variable_names[0], for_primary=for_primary)
+        secondary = self.file_operator.get_df(variable_names[1], for_primary=for_primary)
+        ax.scatter(primary, secondary, alpha=self.std_plot_args['alpha'])
+        splitted_primary = self.file_operator.get_split_by(variable_names[0], for_primary=for_primary)
+        if splitted_primary is not None:
+            splitted_secondary = self.file_operator.get_split_by(variable_names[1], for_primary=for_primary)
+            if len(splitted_primary) == len(splitted_secondary):
+                ax.scatter(splitted_primary, splitted_secondary, alpha=self.std_plot_args['alpha'])
+            else:
+                self.ui.say('Skipping splitted scatter plots, '
+                           f'dimension mismatch ({len(splitted_primary)} vs {len(splitted_secondary)})')
+                ax.scatter([], [])
+        else:
+            ax.scatter([], [])
+        ax.set_xlabel(variable_names[0])
+        ax.set_ylabel(variable_names[1])
+            
     def plot_histogram(self, variable_name: str, ax, title: str = None, 
                     weight_column: str = None, for_primary: bool = True) -> None:
         """
@@ -71,6 +93,9 @@ class PlotOperator():
         # TODO: generalize this!
         fig, ax = plt.subplots(figsize=self.std_pad_len, dpi=100)
         for variable_name in variable_names:
+            if isinstance(variable_name, tuple) or isinstance(variable_name, list):
+                self.plot_scatter(variable_name, ax=ax)
+                continue
             col_type =  str(self.file_operator.get_type(variable_name)).lower()
             if col_type.startswith('float'):
                 self.plot_histogram(variable_name, ax=ax, weight_column=weight_column)
