@@ -15,6 +15,7 @@ This is a usual python package, but it is not yet indexed in https://pypi.org/.
 However, one can install any package from git directly:
 
 .. code-block:: bash
+
   pip3 install git+https://github.com/Bilokin/histogrammer.git
 
 Usage
@@ -23,7 +24,7 @@ Usage
 Histogrammer supports the following formats:
 
  * CSV
- * ROOT
+ * `ROOT <https://www.root.cern/>`_.
 
 This isn't much, but the list will be expanded soon.
 To launch the program on a file, one has to enter the following command:
