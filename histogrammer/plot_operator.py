@@ -85,6 +85,7 @@ class PlotOperator():
         if title is None:
             title = self.file_operator.scheme.get_short_column_name(variable_name)
         ax.set_xlabel(title)
+        ax.legend(fancybox=True, framealpha=0.5)
 
     def plot(self, variable_names: list, weight_column=None):
         """
@@ -109,5 +110,4 @@ class PlotOperator():
                     self.plot_histogram(variable_name, ax=ax, weight_column=weight_column,
                         for_primary=False)
         fig.tight_layout()
-        plt.legend(fancybox=True, framealpha=0.5)
         plt.show(block=False)

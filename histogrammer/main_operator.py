@@ -31,7 +31,8 @@ class MainOperator():
                 self.ui.say('\nPlotting a new histogram')
                 column = self.get_column_name_from_user()
                 self.plt.plot([column])
-                self.choice = self.ui.ask_user_choice('Please select an action:', self.all_choices, True)
+                self.choice = self.ui.ask_user_choice('Please select an action:', 
+                    self.all_choices, default=0, ask_exit=True)
             elif self.choice == 1:
                 self.ui.say('Plotting the same histogram with weight')
                 weight_column = self.get_column_name_from_user(name='weight')
@@ -54,8 +55,11 @@ class MainOperator():
         group_names = self.file_operator.scheme.get_group_names()
         selected_group = None
         if len(group_names) > 1:
-            answer = self.ui.ask_user_choice('Please select a column group:', group_names, True)
+            answer = self.ui.ask_user_choice('Please select a column group:', 
+                group_names, ask_exit=True)
             selected_group = group_names[answer]
         short_columns = self.file_operator.scheme.get_short_column_names(selected_group)
-        answer = self.ui.ask_user_choice(f'Please select a {name} column:', short_columns, True)
-        return self.file_operator.scheme.get_full_column_name(selected_group, short_columns[answer])
+        answer = self.ui.ask_user_choice(f'Please select a {name} column:', 
+            short_columns, ask_exit=True)
+        return self.file_operator.scheme.get_full_column_name(selected_group, 
+            short_columns[answer])

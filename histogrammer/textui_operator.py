@@ -26,20 +26,28 @@ class TextUIOperator():
             sys.exit('Bye!')
         return True
 
-    def ask_user_choice(self, message: str, mlist: list, ask_exit: bool = False) -> int:
+    def ask_user_choice(self, message: str, mlist: list, default: int = None,
+                         ask_exit: bool = False) -> int:
         """
-        Asks user to choose the value amoung the proposed ones
+        Asks user to choose the value amoung the proposed ones.
         """
+        list_length = len(mlist)
         while True:
             self.say(message)
             # single column print:
             if (len(mlist) < self.column_limit):
-                iteration = 0
-                for item in mlist:
-                    print (str(iteration) + ": " + item)
-                    iteration += 1
+                for item, iteration in zip(mlist, range(0, list_length)):
+                    if iteration == default:
+                        self.say(f'{iteration}: {item} [default]')
+                        continue
+                    self.say(f'{iteration}: {item}')
             else: #three column print
-                strlist = [f'{i}: {mlist[i]}' for i in range(0,len(mlist))]
+                strlist = []
+                for i in range(0,list_length):
+                    if default is not None and i == default:
+                        strlist += [f'{i}: {mlist[i]} [default]']
+                        continue
+                    strlist += [f'{i}: {mlist[i]}']
                 strlist = self.add_spaces(strlist)
                 for a,b,c in zip(strlist[::3],strlist[1::3],strlist[2::3]):
                     print('{}{}{}'.format(a,b,c))
@@ -48,11 +56,13 @@ class TextUIOperator():
                 if (len(strlist)%3 == 2):
                     print('{}{}'.format(strlist[-2],strlist[-1]))
             if ask_exit:
-                print("To exit: please type 'e'")
+                self.say("To exit: please type 'e'")
             answer = input()
             if self.is_int(answer):
-                if int(answer) < len(mlist):
+                if int(answer) < list_length:
                     return int(answer)
+            if not answer and default is not None:
+                return default
             if answer == 'e':
                 sys.exit('Bye!')
             self.say(f'Answer {answer} not correct, please try again!')
