@@ -25,7 +25,7 @@ Usage
 Histogrammer supports the following formats:
 
  * CSV
- * `ROOT <https://www.root.cern/>`_.
+ * `ROOT <https://root.cern/>`_.
 
 This isn't much, but the list will be expanded soon.
 
