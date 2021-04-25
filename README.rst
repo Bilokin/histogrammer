@@ -43,4 +43,4 @@ Example gallery
 ---------------
 
 .. image:: doc/images/Example.png
-   :scale: 0.5
+   :scale: 25%
