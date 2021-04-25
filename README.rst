@@ -5,8 +5,14 @@ firing up the ``jupyter-notebook`` server and writing a
 repetitive code again and again?
 If yes, then this package is right for you!
 
-*Histogrammer* allows you to plot basic histograms from any data file 
+
+.. figure:: doc/images/Example.png
+   :align: right
+   :scale: 10
+
+*Histogrammer* allows you to plot basic histograms from any supported data file 
 in a fast and user-friendly manner!
+
 
 Installation
 ------------
