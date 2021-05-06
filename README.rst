@@ -5,7 +5,7 @@ firing up the ``jupyter-notebook`` server and writing a
 repetitive code again and again?
 If yes, then this package is right for you!
 
-*Histogrammer* allows you to plot basic histograms from any data file 
+*Histogrammer* allows you to plot basic histograms from any supported data file 
 in a fast and user-friendly manner!
 
 Installation
@@ -25,7 +25,7 @@ Usage
 Histogrammer supports the following formats:
 
  * CSV
- * `ROOT <https://www.root.cern/>`_.
+ * `ROOT <https://root.cern/>`_.
 
 This isn't much, but the list will be expanded soon.
 
@@ -38,3 +38,9 @@ To launch the program on a file, one has to enter the following command:
 By default, the program will ask user a column name for a histogram plot.
 
 After the histogram is displayed, user may choose to do something else with the chosen column or select a new column to plot.
+
+Example gallery
+---------------
+
+.. image:: doc/images/Example.png
+   :scale: 25%
