@@ -74,11 +74,17 @@ class PlotOperator():
                      'bins':self.n_bins}
         plot_args.update(self.std_plot_args)
         label = 'All entries'
-        ax.hist(primary, hatch='//', label=label, weights=primary_weights, **plot_args)
+        plot_args['hatch'] = '//'
+        plot_args['alpha'] = 0.9
+        if not for_primary:
+            plot_args['hatch'] = r'\\'
+            plot_args['alpha'] = 0.7
+
+        ax.hist(primary, label=label, weights=primary_weights, **plot_args)
         splitted = self.file_operator.get_split_by(variable_name, for_primary=for_primary)
         if not splitted is None:
             sec_label = self.file_operator.get_split_by_name(variable_name)
-            ax.hist(splitted, hatch='//', label=sec_label, **plot_args)
+            ax.hist(splitted, label=sec_label, **plot_args)
         else:
             # Empty plot to switch the color:
             ax.hist([],**plot_args)

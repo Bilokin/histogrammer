@@ -16,6 +16,12 @@ class TextUIOperator():
         """
         print(message)
 
+    def separator(self) -> None:
+        """
+        Prints a separator.
+        """
+        print('=============================================')
+
     def ask_continue_or_exit(self) -> bool:
         """
         Asks user if we want to continue the main loop

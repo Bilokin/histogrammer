@@ -16,22 +16,23 @@ class FileOperator():
         """
         self.ui = TextUIOperator()
         self.filenames = filenames
+        self.datasets = []
         self.selection = None
+        self.prime_dataframe = None
+        self.secondary_dataframe = None
         if 'selection_cut' in args and args['selection_cut']:
             self.selection = args['selection_cut']
-        self.prime_dataframe = None
         self.scheme_name = None
         if 'scheme' in args and args['scheme']:
             self.scheme_name = args['scheme']
         self.scheme = get_scheme(self.scheme_name)
-        self.split_by_cut = None
+        self.split_by = None
         if 'split_by' in args and args['split_by']:
-            self.split_by_cut = args['split_by']
+            self.split_by = args['split_by']
         self.table_name = None
         if 'table_name' in args and args['table_name']:
             self.table_name = args['table_name']
         self.secondary_filenames = None
-        self.secondary_dataframe = None
         if 'versus_dataframe' in args and args['versus_dataframe']:
             self.secondary_filenames = args['versus_dataframe']
 
@@ -43,9 +44,12 @@ class FileOperator():
         if not self.filenames:
             raise Exception('Filenames have not been provided!')
         self.prime_dataframe = self.open_files(self.filenames)
+        self.datasets += [self.prime_dataframe]
         self.scheme.initialize(self.prime_dataframe.columns)
         if self.secondary_filenames:
             self.secondary_dataframe = self.open_files(self.secondary_filenames)
+            self.datasets += [self.secondary_dataframe]
+
         # TODO: Compare the dataframes!
 
     def open_files(self, filenames: list) -> pd.DataFrame:
@@ -115,8 +119,8 @@ class FileOperator():
         """
         Returns split query or column name.
         """
-        if self.split_by_cut:
-            return self.split_by_cut
+        if self.split_by:
+            return self.split_by
         else:
             return self.scheme.get_short_column_name(self.scheme.get_split_column_name(column_name))
 
@@ -127,7 +131,7 @@ class FileOperator():
         dataframe = self.prime_dataframe
         if not for_primary:
             dataframe = self.secondary_dataframe
-        if not self.split_by_cut:
+        if not self.split_by:
             split_column_name = self.scheme.get_split_column_name(column_name)
             #print(split_column_name)
             if not split_column_name:
@@ -138,7 +142,7 @@ class FileOperator():
             if len(splitted_df) < 1:
                 return None
             return splitted_df[column_name]
-        splitted_df = dataframe.query(str(self.split_by_cut), engine='python')
+        splitted_df = dataframe.query(str(self.split_by), engine='python')
         if len(splitted_df) < 1:
             return None
         if column_name:
@@ -172,3 +176,37 @@ class FileOperator():
         Returns True, if there is a secondary dataframe.
         """
         return self.secondary_dataframe is not None
+
+    def show_description(self, variable_names: list):
+        """
+        Prints out the moments and other properties of a distribution
+        """
+        descriptions = ['primary dataframe (blue)', 'secondary dataframe (red)']
+        for variable_name in variable_names:
+            split_by_cut = self.scheme.get_split_column_name(variable_name)
+            if split_by_cut:
+                split_by_cut += ' > 0'
+            if self.split_by:
+                split_by_cut = self.split_by
+
+            for dataset, description in zip(self.datasets, descriptions):
+                self.ui.separator()
+                self.ui.say(f'Variable {variable_name} in {description}')
+                total = len(dataset[variable_name])
+                mean = dataset[variable_name].mean()
+                std = dataset[variable_name].std()
+                nans = dataset[variable_name].isna().sum()
+                self.ui.say(f'Total entries: {total}')
+                self.ui.say(f'Mean total: {mean:.4f} deviation: {std:.4f}')
+                if (nans > 0):
+                    self.ui.say(f'NaNs: {nans} ({nans/total*100:0.2f}%)')
+                if split_by_cut:
+                    splitted = dataset.query(split_by_cut)
+                    total = len(splitted[variable_name])
+
+                    self.ui.say(f'Split entries: {total} by {split_by_cut} (darker)')
+                    if (total > 0):
+                        mean = splitted[variable_name].mean()
+                        std = splitted[variable_name].std()
+                        self.ui.say(f'Mean split: {mean:.4f} deviation: {std:.4f} (darker)')                
+                self.ui.separator()

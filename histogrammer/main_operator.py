@@ -31,6 +31,7 @@ class MainOperator():
                 self.ui.say('\nPlotting a new histogram')
                 column = self.get_column_name_from_user()
                 self.plt.plot([column])
+                self.file_operator.show_description([column])
                 self.choice = self.ui.ask_user_choice('Please select an action:', 
                     self.all_choices, default=0, ask_exit=True)
             elif self.choice == 1:
