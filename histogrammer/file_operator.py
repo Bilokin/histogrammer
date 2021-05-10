@@ -202,11 +202,12 @@ class FileOperator():
                     self.ui.say(f'NaNs: {nans} ({nans/total*100:0.2f}%)')
                 if split_by_cut:
                     splitted = dataset.query(split_by_cut)
-                    total = len(splitted[variable_name])
+                    total_split = len(splitted[variable_name])
 
-                    self.ui.say(f'Split entries: {total} by {split_by_cut} (darker)')
-                    if (total > 0):
+                    self.ui.say(f'Split entries: {total_split} by {split_by_cut} (darker)')
+                    if (total_split > 0):
                         mean = splitted[variable_name].mean()
                         std = splitted[variable_name].std()
                         self.ui.say(f'Mean split: {mean:.4f} deviation: {std:.4f} (darker)')                
+                        self.ui.say(f'Ratio split: {total_split/total:.4f}')
                 self.ui.separator()
