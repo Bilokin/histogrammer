@@ -102,6 +102,8 @@ class PlotOperator():
         for variable_name in variable_names:
             if isinstance(variable_name, tuple) or isinstance(variable_name, list):
                 self.plot_scatter(variable_name, ax=ax)
+                if self.file_operator.has_secondary():
+                    self.plot_scatter(variable_name, ax=ax, for_primary=False)
                 continue
             col_type =  str(self.file_operator.get_type(variable_name)).lower()
             if col_type.startswith('float'):
