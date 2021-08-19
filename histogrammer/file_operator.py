@@ -76,7 +76,7 @@ class FileOperator():
                         selected_name = tree_names[int(answer)]
                         # Remember the choice for other calls of the function:
                         self.table_name = selected_name
-                    root_df = rootfile[selected_name].pandas.df()
+                    root_df = pd.DataFrame(rootfile[selected_name].arrays(library='np'))#.pandas.df()
                     # Drop duplicated columns if any:
                     root_df = root_df.loc[:, ~root_df.columns.duplicated()]
                     if self.selection:
@@ -92,7 +92,7 @@ class FileOperator():
         """
         names = []
         for raw in raw_names:
-            raw_name = raw[0].decode('utf-8')
+            raw_name = raw
             if ';' in raw_name:
                 raw_name = raw_name.split(';')[0]
             names += [raw_name]

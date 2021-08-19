@@ -13,6 +13,7 @@ class PlotOperator():
         self.ui = ui_operator
         self.std_pad_len = (7, 5)
         self.n_bins = 50
+        self.truncate_str_length = 30
         if 'n_bins' in args and args['n_bins']:
             self.n_bins = args['n_bins']
         self.init_plot_config(args)
@@ -84,6 +85,7 @@ class PlotOperator():
         splitted = self.file_operator.get_split_by(variable_name, for_primary=for_primary)
         if not splitted is None:
             sec_label = self.file_operator.get_split_by_name(variable_name)
+            sec_label = (sec_label[:self.truncate_str_length] + '..') if len(sec_label) > self.truncate_str_length else sec_label
             ax.hist(splitted, label=sec_label, **plot_args)
         else:
             # Empty plot to switch the color:
