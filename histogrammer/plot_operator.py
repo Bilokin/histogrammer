@@ -16,6 +16,9 @@ class PlotOperator():
         self.truncate_str_length = 30
         if 'n_bins' in args and args['n_bins']:
             self.n_bins = args['n_bins']
+        self.density = False
+        if 'density' in args and args['density']:
+            self.density = True
         self.init_plot_config(args)
 
     def init_plot_config(self, args):
@@ -77,6 +80,7 @@ class PlotOperator():
         label = 'All entries'
         plot_args['hatch'] = '//'
         plot_args['alpha'] = 0.9
+        plot_args['density'] = self.density
         if not for_primary:
             plot_args['hatch'] = r'\\'
             plot_args['alpha'] = 0.7

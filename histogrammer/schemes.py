@@ -135,7 +135,7 @@ class BelleScheme(SchemeBase):
         for column in self.original_columns:
             added = False
             for prefix in self.prefixes:
-                if column.startswith(prefix):
+                if len(column) > len(prefix) and column.startswith(prefix) and column[len(prefix)] == '_':
                     self.add_to_groups(prefix, column)
                     added = True
                     break

@@ -16,6 +16,8 @@ def getArguments(artificialArgs=None):
                     default=None, type=str)
     parser.add_argument('-n', '--n_bins', help='Number of bins for all plots', 
                     default=50, type=int)   
+    parser.add_argument('-d', '--density', help='Normalize all plots to unity', 
+                    action='store_true')   
     parser.add_argument('-t', '--table_name', help='Name of the table in the datafile', 
                     default=None, type=str)  
     parser.add_argument('-vs', '--versus_dataframe', help='Load another dataframe and compare them', 
