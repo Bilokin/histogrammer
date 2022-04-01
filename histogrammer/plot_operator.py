@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from cycler import cycler
+import numpy as np
 
 class PlotOperator():
     """
@@ -13,9 +14,12 @@ class PlotOperator():
         self.ui = ui_operator
         self.std_pad_len = (7, 5)
         self.n_bins = 50
+        self.scale = 1
         self.truncate_str_length = 30
         if 'n_bins' in args and args['n_bins']:
             self.n_bins = args['n_bins']
+        if 'scale' in args and args['scale']:
+            self.scale = args['scale']
         self.init_plot_config(args)
 
     def init_plot_config(self, args):
@@ -68,7 +72,7 @@ class PlotOperator():
         """
         mrange = self.file_operator.get_dynamic_range(variable_name)
         primary = self.file_operator.get_df(variable_name, for_primary=for_primary)
-        primary_weights = None
+        primary_weights = np.ones_like(primary)
         if weight_column:
             primary_weights = self.file_operator.get_df(weight_column, for_primary=for_primary)
         plot_args = {'range': mrange,
@@ -78,22 +82,26 @@ class PlotOperator():
         plot_args['hatch'] = '//'
         plot_args['alpha'] = 0.9
         if not for_primary:
+            primary_weights *= self.scale
             plot_args['hatch'] = r'\\'
             plot_args['alpha'] = 0.7
 
         ax.hist(primary, label=label, weights=primary_weights, **plot_args)
         splitted = self.file_operator.get_split_by(variable_name, for_primary=for_primary)
-        if not splitted is None:
+        if splitted is not None:
+            splitted_weights = np.ones_like(splitted)
+            if not for_primary:
+                splitted_weights *= self.scale
             sec_label = self.file_operator.get_split_by_name(variable_name)
             sec_label = (sec_label[:self.truncate_str_length] + '..') if len(sec_label) > self.truncate_str_length else sec_label
-            ax.hist(splitted, label=sec_label, **plot_args)
+            ax.hist(splitted, weights=splitted_weights, label=sec_label, **plot_args)
         else:
-            # Empty plot to switch the color:
+            # Empty plot to jump over the color:
             ax.hist([],**plot_args)
         if title is None:
             title = self.file_operator.scheme.get_short_column_name(variable_name)
         ax.set_xlabel(title)
-        ax.legend(fancybox=True, framealpha=0.5)
+        ax.legend(fancybox=True, framealpha=0.5, loc=0)
 
     def plot(self, variable_names: list, weight_column=None):
         """
