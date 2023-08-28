@@ -67,6 +67,7 @@ class PlotOperator():
             ax.scatter([], [])
         ax.set_xlabel(variable_names[0])
         ax.set_ylabel(variable_names[1])
+        self.ui.say(f'ρ = {np.corrcoef(primary,secondary)[0][1]:0.2f}')
             
     def plot_histogram(self, variable_name: str, ax, title: str = None, 
                     weight_column: str = None, for_primary: bool = True) -> None:
